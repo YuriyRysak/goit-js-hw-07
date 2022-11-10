@@ -26,7 +26,7 @@ function createItemsGalleryMarkup (galleryItems) {
     return galleryItems.map(({preview, original, description}) => {
        return `
         <div class="gallery__item">
-            <a class="gallery__link" href="large-image.jpg">
+            <a class="gallery__link" href="${original}">
                 <img
                 class="gallery__image"
                 src="${preview}"
@@ -47,18 +47,22 @@ function onImageContainerClick (event) {
     if (!isImageCart) {
        return;
     }
-    const selectedImage = event.target.getAttribute('data-source');
+    
     
     const instance = basicLightbox.create(
-        `<img src="${selectedImage}" width="800" height="600">`
-        )
+        `<img src="${event.target.dataset.source}" width="800" height="600">`,
+
+        {   onShow: () => window.addEventListener('keydown', onEscKeyPress),
+            onClose: () => window.removeEventListener('keydown', onEscKeyPress),
+        }
+        );
         instance.show()
 
-         addEventListener('keydown', event => {
-        		if (event.key === 'Escape') {
-        			instance.close()
-        		}
-        	})
+        function onEscKeyPress(event) {   
+            if (event.code === "Escape") {
+                instance.close();
+            }
+        }
  
 }
 
